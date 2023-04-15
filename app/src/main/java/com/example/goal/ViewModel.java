@@ -30,10 +30,10 @@ public class ViewModel extends AndroidViewModel {
     public LiveData<List<Goal>> getRequests() {
         return goals;
     }
-    public void addGoal(@NonNull String goalName, @Nullable String goalDescription, String tasks) {
-        if (!TextUtils.isEmpty(goalName) && tasks != null && !tasks.isEmpty()) {
+    public void addGoal(@NonNull String goalName, @Nullable String goalDescription, String question) {
+        if (!TextUtils.isEmpty(goalName)) {
             AsyncTask.execute(() -> {
-                appDatabase.goalDao().insert(new Goal(goalName, goalDescription, tasks));
+                appDatabase.goalDao().insert(new Goal(goalName, goalDescription, question));
                 refreshGoalList();
             });
         } else {
@@ -62,6 +62,12 @@ public class ViewModel extends AndroidViewModel {
             refreshGoalList();
         });
     }
+//    public void updateQuestion(int goalId, String question) {
+//        AsyncTask.execute(() -> {
+//            appDatabase.goalDao().updateQuestion(goalId, question);
+//            refreshGoalList();
+//        });
+//    }
 
 //    public class ViewModel extends AndroidViewModel {
 //        private AppDatabase appDatabase;

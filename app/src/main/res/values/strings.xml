@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Goal</string>
+    <string name="saved_time">Saved time: %s</string>
 </resources>

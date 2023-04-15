@@ -54,9 +54,7 @@ public class GoalsListAdapter extends RecyclerView.Adapter<GoalsListAdapter.MyVi
     public void onBindViewHolder (@NonNull MyViewHolder holder,int position){
         holder.goalText.setText(this.goalList.get(position).getGoalName());
         holder.descriptionText.setText(this.goalList.get(position).getGoalDescription());
-        holder.taskText.setText(this.goalList.get(position).getTasks());
-      //  holder.checkBox.setChecked(this.goalList.get(position).);
-        holder.checkBox.setChecked(this.goalList.get(position).isCompleted());
+        holder.question.setText(this.goalList.get(position).getQuestion());
 
 //        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
 //            this.goalList.get(position).setCompleted(isChecked);
@@ -76,15 +74,13 @@ public class GoalsListAdapter extends RecyclerView.Adapter<GoalsListAdapter.MyVi
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView goalText;
         TextView descriptionText;
-        CheckBox checkBox;
-        TextView taskText;
+        TextView question;
 
         public MyViewHolder(View view) {
             super(view);
             goalText = view.findViewById(R.id.txt_goal);
             descriptionText = view.findViewById(R.id.txt_description);
-            checkBox =  view.findViewById(R.id.checkBox);
-            taskText = view.findViewById(R.id.txt_task_name);
+            question= view.findViewById(R.id.question);
         }
     }
 }

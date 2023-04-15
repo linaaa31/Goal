@@ -5,7 +5,11 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -26,15 +30,25 @@ public class AddNewGoalActivity extends AppCompatActivity {
 
         final EditText goalName = findViewById(R.id.goal_name_edittext);
         final EditText goalDes = findViewById(R.id.goal_description_edittext);
-        final EditText task = findViewById(R.id.task_edittext);
+        final EditText questionText = findViewById(R.id.question_edittext);
 
         Button saveButton = findViewById(R.id.save);
+
+        Button timeButton = findViewById(R.id.time_button);
+        timeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new TimePickerFragment();
+                newFragment.show(getSupportFragmentManager(), "timePicker");
+            }
+        });
+
 
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        // Reload the film list when the AddNewFilmActivity is finished
+
                         if (result.getResultCode() == RESULT_OK) {
                             Intent intent = result.getData();
                             if (intent != null) {
@@ -53,13 +67,12 @@ public class AddNewGoalActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String name = goalName.getText().toString();
                 String descrip = goalDes.getText().toString();
-                String tasks = task.getText().toString();
-
+               String question =  questionText.getText().toString();
 
                 // Save the new film data to the database
                AppDatabase db = AppDatabase.getDBInstance(getApplicationContext());
                // DatabaseClient db = DatabaseClient.getInstance(getApplicationContext());
-                Goal goal = new Goal(name,descrip,tasks);
+                Goal goal = new Goal(name,descrip,question);
                 db.goalDao().insert(goal);
 
 
