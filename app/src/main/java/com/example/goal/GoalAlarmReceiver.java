@@ -23,8 +23,7 @@ public class GoalAlarmReceiver extends BroadcastReceiver {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
 
-        // Set the intent that will be launched when the user taps on the notification
-        Intent answerIntent = new Intent(context, AnswerActivity.class);
+        Intent answerIntent = new Intent(context, QuestionActivity.class);
         answerIntent.putExtra("goal", goal);
         answerIntent.putExtra("question", question);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, answerIntent, 0);

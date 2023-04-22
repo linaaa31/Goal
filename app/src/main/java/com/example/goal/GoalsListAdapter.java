@@ -56,10 +56,6 @@ public class GoalsListAdapter extends RecyclerView.Adapter<GoalsListAdapter.MyVi
         holder.descriptionText.setText(this.goalList.get(position).getGoalDescription());
         holder.question.setText(this.goalList.get(position).getQuestion());
 
-//        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-//            this.goalList.get(position).setCompleted(isChecked);
-//            updateGoal(this.goalList.get(position));
-//        });
     }
 
   //  private void updateGoal(Goal goal) {

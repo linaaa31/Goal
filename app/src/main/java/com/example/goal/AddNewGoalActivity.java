@@ -69,18 +69,14 @@ public class AddNewGoalActivity extends AppCompatActivity {
                 String descrip = goalDes.getText().toString();
                String question =  questionText.getText().toString();
 
-                // Save the new film data to the database
                AppDatabase db = AppDatabase.getDBInstance(getApplicationContext());
-               // DatabaseClient db = DatabaseClient.getInstance(getApplicationContext());
+
                 Goal goal = new Goal(name,descrip,question);
                 db.goalDao().insert(goal);
 
-
-                // Create an intent to return the result to the MainActivity
                 Intent intent = new Intent();
                 intent.putExtra("isDataChanged", true);
 
-                // Set the result and finish the AddNewFilmActivity
                 setResult(RESULT_OK, intent);
                 finish();
             }
