@@ -27,15 +27,32 @@ public class Goal {
     @ColumnInfo(name = "question")
     private String question;
 
+    @ColumnInfo(name = "frequency")
+    private String frequency;
+
+    @ColumnInfo(name="startHour")
+    private String startHour;
+
+    @ColumnInfo(name ="endHour")
+    private String endHour;
 
 
-
-    public Goal(@NonNull String goalName, @Nullable String goalDescription, String question) {
+    public Goal(@NonNull String goalName, @Nullable String goalDescription, String question, String frequency, String startHour,String endHour) {
         this.goalName = goalName;
         this.goalDescription = goalDescription;
         this.question = question;
+        this.frequency = frequency;
+        this.startHour = startHour;
+        this.endHour = endHour;
+
 
     }
+
+    public String getStartHour() {return startHour;}
+
+   public String getEndHour() {return endHour;}
+
+    public String getFrequency() {return frequency;}
 
     public String getQuestion() {
         return question;

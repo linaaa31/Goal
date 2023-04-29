@@ -55,6 +55,9 @@ public class GoalsListAdapter extends RecyclerView.Adapter<GoalsListAdapter.MyVi
         holder.goalText.setText(this.goalList.get(position).getGoalName());
         holder.descriptionText.setText(this.goalList.get(position).getGoalDescription());
         holder.question.setText(this.goalList.get(position).getQuestion());
+        holder.frequency.setText(this.goalList.get(position).getFrequency());
+    //    holder.startHour.setText(this.goalList.get(position).getStartHour());
+      //  holder.endHour.setText(this.goalList.get(position).getEndHour());
 
     }
 
@@ -71,12 +74,19 @@ public class GoalsListAdapter extends RecyclerView.Adapter<GoalsListAdapter.MyVi
         TextView goalText;
         TextView descriptionText;
         TextView question;
+        TextView frequency;
+        TextView startHour;
+       TextView endHour;
 
         public MyViewHolder(View view) {
             super(view);
             goalText = view.findViewById(R.id.txt_goal);
             descriptionText = view.findViewById(R.id.txt_description);
             question= view.findViewById(R.id.question);
+            frequency = view.findViewById(R.id.tv_frequency);
+            startHour = view.findViewById(R.id.tv_start_hour);
+            endHour = view.findViewById(R.id.end_hour);
+
         }
     }
 }

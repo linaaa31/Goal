@@ -26,7 +26,6 @@ import java.util.List;
 
 public class GoalsActivity extends AppCompatActivity {
     private GoalsListAdapter goalsListAdapter;
-
     private final ActivityResultLauncher<Intent> addNewGoalLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -35,7 +34,6 @@ public class GoalsActivity extends AppCompatActivity {
                 }
             }
     );
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -1,6 +1,10 @@
 package com.example.goal;
 
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -30,10 +34,10 @@ public class ViewModel extends AndroidViewModel {
     public LiveData<List<Goal>> getRequests() {
         return goals;
     }
-    public void addGoal(@NonNull String goalName, @Nullable String goalDescription, String question) {
+    public void addGoal(@NonNull String goalName, @Nullable String goalDescription, String question,String frequency, String startHour,String endHour) {
         if (!TextUtils.isEmpty(goalName)) {
             AsyncTask.execute(() -> {
-                appDatabase.goalDao().insert(new Goal(goalName, goalDescription, question));
+                appDatabase.goalDao().insert(new Goal(goalName, goalDescription, question,frequency,startHour,endHour));
                 refreshGoalList();
             });
         } else {
@@ -62,6 +66,8 @@ public class ViewModel extends AndroidViewModel {
             refreshGoalList();
         });
     }
+
+
 //    public void updateQuestion(int goalId, String question) {
 //        AsyncTask.execute(() -> {
 //            appDatabase.goalDao().updateQuestion(goalId, question);
