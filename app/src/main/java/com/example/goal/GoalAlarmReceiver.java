@@ -20,7 +20,7 @@ public class GoalAlarmReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             String question = intent.getStringExtra("question");
-
+           // int notificationId = intent.getIntExtra("notificationId", 0);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "Goal Reminder", NotificationManager.IMPORTANCE_DEFAULT);

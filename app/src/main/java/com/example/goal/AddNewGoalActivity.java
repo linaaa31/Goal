@@ -77,12 +77,13 @@ public class AddNewGoalActivity extends AppCompatActivity {
                AppDatabase db = AppDatabase.getDBInstance(getApplicationContext());
 
                 Goal goal = new Goal(name,descrip,question,frequency,startHour,endHour);
+                //db.goalDao().insert(goal);
                 db.goalDao().insert(goal);
-
                 Intent intent = new Intent();
                 intent.putExtra("isDataChanged", true);
 
                AlarmHelper alarmHelper = new AlarmHelper();
+              //  alarmHelper.scheduleAlarm(getApplicationContext(), goal);
                 alarmHelper.scheduleAlarm(getApplicationContext(), goal);
                 setResult(RESULT_OK, intent);
                 finish();

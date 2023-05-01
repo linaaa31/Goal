@@ -11,60 +11,39 @@ import com.example.goal.db.Goal;
 import java.util.Calendar;
 
 public class AlarmHelper {
+    private AlarmManager alarmManager;
+    private PendingIntent pendingIntent;
     public void scheduleAlarm(Context context, Goal goal) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-
+        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, GoalAlarmReceiver.class);
         intent.putExtra("question", goal.getQuestion());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 100, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        int notificationFrequency = Integer.parseInt(goal.getFrequency());
+        pendingIntent = PendingIntent.getBroadcast(context, goal.getGoalId() , intent,PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
 
-        long timeInMillis = System.currentTimeMillis() + Long.parseLong(goal.getFrequency()) * 1000;
+        Calendar start = Calendar.getInstance();
+        start.setTimeInMillis(System.currentTimeMillis());
+        start.set(Calendar.HOUR_OF_DAY, Integer.parseInt(goal.getStartHour()));
+        start.set(Calendar.MINUTE, 0);
+        start.set(Calendar.SECOND, 0);
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
+        Calendar end = Calendar.getInstance();
+        end.setTimeInMillis(System.currentTimeMillis());
+        end.set(Calendar.HOUR_OF_DAY, Integer.parseInt(goal.getEndHour()));
+        end.set(Calendar.MINUTE, 0);
+        end.set(Calendar.SECOND, 0);
+
+        long intervalMillis = notificationFrequency * 1000 * 60; // *60
+        long triggerAtMillis = System.currentTimeMillis();
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, triggerAtMillis, intervalMillis, pendingIntent);
     }
 
+    public void stopAlarm() {
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+        }
+    }
 }
 
-//    public void scheduleAlarm(Context context, Goal goal) {
-//        int notificationFrequency = Integer.parseInt(goal.getFrequency());
-//        int startHour = Integer.parseInt(goal.getStartHour());
-//        int endHour = Integer.parseInt(goal.getEndHour());
-//
-//        int startHour24 = startHour % 12 + (startHour < 12 ? 0 : 12);
-//        int endHour24 = endHour % 12 + (endHour < 12 ? 0 : 12);
-//
-//        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-//        Intent intent = new Intent(context, GoalAlarmReceiver.class);
-//        intent.putExtra("question", goal.getQuestion());
-//        alarmIntent = PendingIntent.getBroadcast(context, 100, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-//        alarmManager.cancel(alarmIntent);
-//
-//        Calendar now = Calendar.getInstance();
-//        int currentHour = now.get(Calendar.HOUR_OF_DAY);
-//
-//        int nextNotificationTime = currentHour * 60 + (notificationFrequency - (currentHour % notificationFrequency)) * 60;
-//
-//        if (nextNotificationTime >= startHour24 * 60 && nextNotificationTime < endHour24 * 60) {
-//            nextNotificationTime = endHour24 * 60 + (notificationFrequency - (endHour24 * 60 % notificationFrequency)) % notificationFrequency;
-//        }
-//        //        int nextNotificationTime = currentHour + (notificationFrequency - (currentHour % notificationFrequency));
-////
-////        if (nextNotificationTime >= startHour24  && nextNotificationTime <endHour24) {
-////            nextNotificationTime = endHour24 + (notificationFrequency - (endHour24 % notificationFrequency));
-////        }
-//        // alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, now.getTimeInMillis() + (nextNotificationTime - currentHour) * 60 * 60 * 1000, interval, alarmIntent);
-////        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()) {
-////
-////            alarmManager.setExact(AlarmManager.RTC_WAKEUP, now.getTimeInMillis() + (nextNotificationTime - currentHour) * 60 * 60 * 1000, alarmIntent);
-////        }
-//
-//    }}
-////    public void stopAlarm() {
-////        if (alarmManager != null) {
-////            alarmManager.cancel(alarmIntent);
-////        }
-////    }
-////}
+
 
 
