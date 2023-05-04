@@ -41,8 +41,8 @@ public class AddNewGoalActivity extends AppCompatActivity {
         final EditText goalDes = findViewById(R.id.goal_description_edittext);
         final EditText questionText = findViewById(R.id.question_edittext);
         final EditText frequencyText = findViewById(R.id.frequency);
-       final EditText startHourText = findViewById(R.id.start_hour);
-        final EditText endHourText = findViewById(R.id.end_hour);
+
+
 
 
         Button saveButton = findViewById(R.id.save);
@@ -71,31 +71,25 @@ public class AddNewGoalActivity extends AppCompatActivity {
                 String descrip = goalDes.getText().toString();
                String question =  questionText.getText().toString();
               String frequency= frequencyText.getText().toString();
-             String startHour = startHourText.getText().toString();
-             String endHour = endHourText.getText().toString();
+
 
                AppDatabase db = AppDatabase.getDBInstance(getApplicationContext());
 
-                Goal goal = new Goal(name,descrip,question,frequency,startHour,endHour);
+                Goal goal = new Goal(name,descrip,question,frequency);
                 //db.goalDao().insert(goal);
                 db.goalDao().insert(goal);
                 Intent intent = new Intent();
                 intent.putExtra("isDataChanged", true);
 
-               AlarmHelper alarmHelper = new AlarmHelper();
-              //  alarmHelper.scheduleAlarm(getApplicationContext(), goal);
-                alarmHelper.scheduleAlarm(getApplicationContext(), goal);
+//               AlarmHelper alarmHelper = new AlarmHelper();
+//              //  alarmHelper.scheduleAlarm(getApplicationContext(), goal);
+//                alarmHelper.scheduleAlarm(getApplicationContext(), goal);
                 setResult(RESULT_OK, intent);
                 finish();
             }
         });
 
     }
-//
-
-
-// Show the TimePickerDialog when the corresponding button is clicked
-
 
     @Override
     public void onBackPressed() {

@@ -30,27 +30,27 @@ public class Goal {
     @ColumnInfo(name = "frequency")
     private String frequency;
 
-    @ColumnInfo(name="startHour")
-    private String startHour;
+    @ColumnInfo(name = "lastNotification")
+    private String lastNotification;
 
-    @ColumnInfo(name ="endHour")
-    private String endHour;
-
-
-    public Goal(@NonNull String goalName, @Nullable String goalDescription, String question, String frequency, String startHour,String endHour) {
+    public Goal(@NonNull String goalName, @Nullable String goalDescription, String question, String frequency) {
         this.goalName = goalName;
         this.goalDescription = goalDescription;
         this.question = question;
         this.frequency = frequency;
-        this.startHour = startHour;
-        this.endHour = endHour;
-
-
     }
 
-    public String getStartHour() {return startHour;}
+    public void setFrequency(String frequency) {
+        this.frequency = frequency;
+    }
 
-   public String getEndHour() {return endHour;}
+    public void setLastNotification(String lastNotification) {
+        this.lastNotification = lastNotification;
+    }
+
+    public String getLastNotification() {
+        return lastNotification;
+    }
 
     public String getFrequency() {return frequency;}
 

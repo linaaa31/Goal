@@ -19,22 +19,11 @@ public class GoalsListAdapter extends RecyclerView.Adapter<GoalsListAdapter.MyVi
 
     private Context context;
     private List<Goal> goalList;
-//    private final LayoutInflater inflater;
-//    private final ViewModel viewModel;
 
-   // List<Goal> goalList, LayoutInflater inflater, ViewModel viewModel
 
     public GoalsListAdapter(Context context) {
         this.context = context;
-//        this.goalList = goalList;
-//        this.inflater = inflater;
-//        this.viewModel = viewModel;
     }
-//    public GoalsListAdapter(Context context) {
-//        this.context = context;
-//    }
-
-
 
     public void setGoalList (List < Goal > goalList){
         this.goalList = goalList;
@@ -51,19 +40,12 @@ public class GoalsListAdapter extends RecyclerView.Adapter<GoalsListAdapter.MyVi
     }
 
     @Override
-    public void onBindViewHolder (@NonNull MyViewHolder holder,int position){
+    public void onBindViewHolder (@NonNull MyViewHolder holder,int position) {
         holder.goalText.setText(this.goalList.get(position).getGoalName());
         holder.descriptionText.setText(this.goalList.get(position).getGoalDescription());
         holder.question.setText(this.goalList.get(position).getQuestion());
         holder.frequency.setText(this.goalList.get(position).getFrequency());
-    //    holder.startHour.setText(this.goalList.get(position).getStartHour());
-      //  holder.endHour.setText(this.goalList.get(position).getEndHour());
-
     }
-
-  //  private void updateGoal(Goal goal) {
-    //    viewModel.updateGoal(goal);
-  //  }
 
     @Override
     public int getItemCount () {
@@ -75,8 +57,7 @@ public class GoalsListAdapter extends RecyclerView.Adapter<GoalsListAdapter.MyVi
         TextView descriptionText;
         TextView question;
         TextView frequency;
-        TextView startHour;
-       TextView endHour;
+
 
         public MyViewHolder(View view) {
             super(view);
@@ -84,8 +65,6 @@ public class GoalsListAdapter extends RecyclerView.Adapter<GoalsListAdapter.MyVi
             descriptionText = view.findViewById(R.id.txt_description);
             question= view.findViewById(R.id.question);
             frequency = view.findViewById(R.id.tv_frequency);
-            startHour = view.findViewById(R.id.tv_start_hour);
-            endHour = view.findViewById(R.id.end_hour);
 
         }
     }

@@ -11,38 +11,42 @@ import com.example.goal.db.Goal;
 import java.util.Calendar;
 
 public class AlarmHelper {
+
     private AlarmManager alarmManager;
     private PendingIntent pendingIntent;
-    public void scheduleAlarm(Context context, Goal goal) {
-        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+    public void scheduleAlarm(Context context, Goal goal, long frequencyInMillis) {
         Intent intent = new Intent(context, GoalAlarmReceiver.class);
-        intent.putExtra("question", goal.getQuestion());
-        int notificationFrequency = Integer.parseInt(goal.getFrequency());
-        pendingIntent = PendingIntent.getBroadcast(context, goal.getGoalId() , intent,PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        intent.putExtra("goal_id", goal.getGoalId());
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, goal.getGoalId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Calendar start = Calendar.getInstance();
-        start.setTimeInMillis(System.currentTimeMillis());
-        start.set(Calendar.HOUR_OF_DAY, Integer.parseInt(goal.getStartHour()));
-        start.set(Calendar.MINUTE, 0);
-        start.set(Calendar.SECOND, 0);
-
-        Calendar end = Calendar.getInstance();
-        end.setTimeInMillis(System.currentTimeMillis());
-        end.set(Calendar.HOUR_OF_DAY, Integer.parseInt(goal.getEndHour()));
-        end.set(Calendar.MINUTE, 0);
-        end.set(Calendar.SECOND, 0);
-
-        long intervalMillis = notificationFrequency * 1000 * 60; // *60
-        long triggerAtMillis = System.currentTimeMillis();
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, triggerAtMillis, intervalMillis, pendingIntent);
-    }
-
-    public void stopAlarm() {
-        if (alarmManager != null) {
-            alarmManager.cancel(pendingIntent);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        long triggerTime = System.currentTimeMillis() + frequencyInMillis;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, alarmIntent);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, alarmIntent);
+        } else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, triggerTime, alarmIntent);
         }
     }
+
+    public void stopAlarm(Context context, int goalId) {
+        Intent intent = new Intent(context, GoalAlarmReceiver.class);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, goalId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(alarmIntent);
+        alarmIntent.cancel();
+    }
 }
+//    public void stopAlarm() {
+//        if (alarmManager != null) {
+//            alarmManager.cancel(pendingIntent);
+//        }
+//    }
+//}
+
 
 
 

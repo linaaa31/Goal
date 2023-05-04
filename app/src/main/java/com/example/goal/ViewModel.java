@@ -19,107 +19,89 @@ import com.example.goal.db.AppDatabase;
 import com.example.goal.db.DatabaseClient;
 import com.example.goal.db.Goal;
 
+import java.util.ArrayList;
 import java.util.List;
-
 public class ViewModel extends AndroidViewModel {
+    private MutableLiveData<List<Goal>> allGoals;
+    private MutableLiveData<List<Goal>> filteredGoals;
+    private AlarmHelper alarmHelper;
     private AppDatabase appDatabase;
-    private MutableLiveData<List<Goal>> goals;
 
     public ViewModel(@NonNull Application application) {
         super(application);
-        goals = new MutableLiveData<>();
+        allGoals = new MutableLiveData<>();
+        filteredGoals = new MutableLiveData<>();
+        alarmHelper = new AlarmHelper();
         appDatabase = DatabaseClient.getInstance(getApplication()).getAppDatabase();
     }
 
-    public LiveData<List<Goal>> getRequests() {
-        return goals;
+    public LiveData<List<Goal>> getAllGoals() {
+        return allGoals;
     }
-    public void addGoal(@NonNull String goalName, @Nullable String goalDescription, String question,String frequency, String startHour,String endHour) {
+
+    public LiveData<List<Goal>> getFilteredGoals(long lastNotificationTime) {
+        List<Goal> allGoals = this.allGoals.getValue();
+        List<Goal> filteredList = new ArrayList<>();
+        if (allGoals != null) {
+            for (Goal goal : allGoals) {
+                long goalLastNotification = Long.parseLong(goal.getLastNotification());
+                long frequencyInMillis = getFrequencyInMillis(Long.parseLong(goal.getFrequency()));
+                if (goalLastNotification + frequencyInMillis <= lastNotificationTime) {
+                    filteredList.add(goal);
+                }
+            }
+        }
+        filteredGoals.setValue(filteredList);
+        return filteredGoals;
+    }
+
+    public void addGoal(@NonNull String goalName, @Nullable String goalDescription, String question, String frequency) {
         if (!TextUtils.isEmpty(goalName)) {
             AsyncTask.execute(() -> {
-                appDatabase.goalDao().insert(new Goal(goalName, goalDescription, question,frequency,startHour,endHour));
-                refreshGoalList();
+                Goal newGoal = new Goal(goalName, goalDescription, question, frequency);
+                appDatabase.goalDao().insert(newGoal);
+                allGoals.postValue(appDatabase.goalDao().getAllGoals());
+                scheduleNotification(getApplication(), newGoal);
             });
         } else {
             Toast.makeText(getApplication(), "There are no goals", Toast.LENGTH_SHORT).show();
         }
     }
-    public void deleteGoal(Goal goal){
-        AsyncTask.execute(()->{
-            appDatabase.goalDao().delete(goal);
-            refreshGoalList();
+
+    public void updateGoal(Goal goal) {
+        AsyncTask.execute(() -> {
+            appDatabase.goalDao().updateGoal(goal);
+            allGoals.postValue(appDatabase.goalDao().getAllGoals());
+            scheduleNotification(getApplication(), goal);
         });
     }
-    private void refreshGoalList() {
-        List<Goal> updateList = appDatabase.goalDao().getAllGoals();
-        goals.postValue(updateList);
+
+    public void deleteGoal(Goal goal) {
+        AsyncTask.execute(() -> {
+            appDatabase.goalDao().delete(goal);
+            allGoals.postValue(appDatabase.goalDao().getAllGoals());
+            alarmHelper.stopAlarm(getApplication(), goal.getGoalId());
+        });
     }
 
     public void readRequest() {
         AsyncTask.execute(() -> {
-            refreshGoalList();
-        });
-    }
-    public void updateGoal(Goal goal) {
-        AsyncTask.execute(() -> {
-            appDatabase.goalDao().updateGoal(goal);
-            refreshGoalList();
+            allGoals.postValue(appDatabase.goalDao().getAllGoals());
+            long lastNotificationTime = System.currentTimeMillis() - getFrequencyInMillis(1);
+            getFilteredGoals(lastNotificationTime);
         });
     }
 
+    private long getFrequencyInMillis(long frequency) {
+        return frequency * 3600000L;
+    }
 
-//    public void updateQuestion(int goalId, String question) {
-//        AsyncTask.execute(() -> {
-//            appDatabase.goalDao().updateQuestion(goalId, question);
-//            refreshGoalList();
-//        });
-//    }
+    public void scheduleNotification(Context context, Goal goal) {
+        long frequencyInMillis = getFrequencyInMillis(Long.parseLong(goal.getFrequency()));
+        alarmHelper.scheduleAlarm(context, goal, frequencyInMillis);
+    }
 
-//    public class ViewModel extends AndroidViewModel {
-//        private AppDatabase appDatabase;
-//        private MutableLiveData<List<Goal>> goals;
-//
-//        public ViewModel(@NonNull Application application) {
-//            super(application);
-//            goals = new MutableLiveData<>();
-//            appDatabase = DatabaseClient.getInstance(getApplication()).getAppDatabase();
-//        }
-//
-//        public LiveData<List<Goal>> getGoals() {
-//            return goals;
-//        }
-//
-//        public void addGoal(@NonNull String goalName, @Nullable String goalDescription, List<String> tasks) {
-//            if (!TextUtils.isEmpty(goalName) && tasks != null && !tasks.isEmpty()) {
-//                AsyncTask.execute(() -> {
-//                    appDatabase.goalDao().insert(new Goal(goalName, goalDescription, tasks));
-//                    refreshGoalList();
-//                });
-//            } else {
-//                Toast.makeText(getApplication(), "There are no goals", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//
-//        public void deleteGoal(Goal goal){
-//            AsyncTask.execute(()->{
-//                appDatabase.goalDao().delete(goal);
-//                refreshGoalList();
-//            });
-//        }
-//
-//        private void refreshGoalList() {
-//            goals.postValue(appDatabase.goalDao().getAllGoals());
-//        }
-//
-//        public void readRequest() {
-//            AsyncTask.execute(() -> {
-//                refreshGoalList();
-//            });
-//        }
-//
-//        public LiveData<List<Goal>> getGoals() {
-//            return goals;
-//        }
-//    }
-
+    public void stopNotification(Goal goal) {
+        alarmHelper.stopAlarm(getApplication(), goal.getGoalId());
+    }
 }

@@ -35,23 +35,7 @@ public class GoalAlarmReceiver extends BroadcastReceiver {
                     .setContentText(question)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setAutoCancel(true);
-
-            // Show the notification
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
             notificationManager.notify(NOTIFICATION_ID, builder.build());
         }
     }
-
-//public class GoalAlarmReceiver extends BroadcastReceiver {
-//
-//    @Override
-//    public void onReceive(Context context, Intent intent) {
-//        String question = intent.getStringExtra("question");
-//
-////        Log.i("ALM", "Received alarm, use intent to pass data");
-////        NotificationHelper.show(context, "Goal", "Notification from goal");
-////        MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.cartoon);
-////        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
-////        mediaPlayer.start();
-//    }
-//}
